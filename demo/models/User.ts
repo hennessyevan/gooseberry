@@ -29,6 +29,16 @@ export const UserModel = mongoose.model(
       type: [mongoose.Schema.Types.ObjectId],
       ref: "Post"
     },
+    nested: {
+      nested: {
+        nested: {
+          nested: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User"
+          }
+        }
+      }
+    },
     roles: [RoleSchema]
   })
 )

@@ -3,6 +3,13 @@
     "_id": "Evan",
     "name": "Evan",
     "likedPosts": ["First Post"],
+    "nested": {
+      "nested": {
+        "nested": {
+          "nested": "Evan"
+        }
+      }
+    },
     "roles": [
       {
         "level": 1,
