@@ -2,6 +2,23 @@
   {
     "_id": "Evan",
     "name": "Evan",
-    "likedPosts": ["First Post"]
+    "likedPosts": ["First Post"],
+    "roles": [
+      {
+        "level": 1,
+        "_id": "First Post",
+        "domain": "Post"
+      },
+      {
+        "level": 3,
+        "_id": "Post1",
+        "domain": "Post"
+      },
+      {
+        "level": 2,
+        "_id": "First Post",
+        "domain": "Post"
+      }
+    ]
   }
 ]
