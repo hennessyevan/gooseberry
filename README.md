@@ -1,7 +1,12 @@
-gooseberry
-==========
-
-Mongoose test
+<div align="center">
+  <br>
+  <br>
+	<img src="Gooseberry@2x.png" width="500" alt="Gooseberry: Smart Mongoose Seeding Tool">
+	<br>
+	<br>
+  <br>
+	<br>
+</div>
 
 [![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io)
 [![Version](https://img.shields.io/npm/v/gooseberry.svg)](https://npmjs.org/package/gooseberry)
@@ -9,11 +14,63 @@ Mongoose test
 [![License](https://img.shields.io/npm/l/gooseberry.svg)](https://github.com/hennessyevan/gooseberry/blob/master/package.json)
 
 <!-- toc -->
-* [Usage](#usage)
-* [Commands](#commands)
-<!-- tocstop -->
+
+- [Usage](#usage)
+- [Commands](#commands)
+  <!-- tocstop -->
+
+# Development
+
+This package is new and under active development. PRs are welcome.
+
+Check the 1.0 Roadmap
+
+# Methodology
+
+Gooseberry uses placeholder IDs to reference raw seeding data. It makes 2 passes over the data first to setup the initial data and assign IDs and then to replace the placeholder IDs with the real IDs based on your mongoose schemae.
+
+The transformed data is then fed to `mongoose.create` as per usual running the validation and methods.
+
+### Example
+
+**This Raw Data**
+
+```json
+// users.json
+  {
+    "id": "joe",
+    "firstName": "Joe",
+    "likedPosts": ["welcomePost"]
+  }
+// posts.json
+  {
+    "id": "welcomePost",
+    "title": "Welcome to my blog!",
+    "author": "joe"
+  }
+```
+
+**Becomes**
+
+```json
+// mongodb://.../users
+  {
+    "id": "5d6e80622037da89a22195f6",
+    "firstName": "Joe",
+    "likedPosts": ["5d6e80622037da89a22195f7"]
+  }
+// mongodb://.../posts
+  {
+    "id": "5d6e80622037da89a22195f7",
+    "title": "Welcome to my blog!",
+    "author": "5d6e80622037da89a22195f6"
+  }
+```
+
 # Usage
+
 <!-- usage -->
+
 ```sh-session
 $ npm install -g gooseberry
 $ gooseberry COMMAND
@@ -25,11 +82,15 @@ USAGE
   $ gooseberry COMMAND
 ...
 ```
+
 <!-- usagestop -->
+
 # Commands
+
 <!-- commands -->
-* [`gooseberry help [COMMAND]`](#gooseberry-help-command)
-* [`gooseberry seed [COLLECTION]`](#gooseberry-seed-collection)
+
+- [`gooseberry help [COMMAND]`](#gooseberry-help-command)
+- [`gooseberry seed [COLLECTION]`](#gooseberry-seed-collection)
 
 ## `gooseberry help [COMMAND]`
 
@@ -68,4 +129,9 @@ EXAMPLES
 ```
 
 _See code: [src/commands/seed.ts](https://github.com/hennessyevan/gooseberry/blob/v0.0.1-beta.1/src/commands/seed.ts)_
+
 <!-- commandsstop -->
+
+# Credits
+
+The brilliant idea for the smart IDs comes from [seedgoose](https://github.com/zhangkaiyulw/seedgoose). Gooseberry builds on that idea and adds mongoose validation et al. to that idea.
