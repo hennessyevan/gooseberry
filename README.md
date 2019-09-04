@@ -23,7 +23,7 @@
 
 This package is new and under active development. PRs are welcome.
 
-Check the 1.0 Roadmap
+Check the [1.0 Roadmap](https://github.com/hennessyevan/gooseberry/projects/1) for more.
 
 # Methodology
 
