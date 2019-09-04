@@ -14,10 +14,12 @@
 [![License](https://img.shields.io/npm/l/gooseberry.svg)](https://github.com/hennessyevan/gooseberry/blob/master/package.json)
 
 <!-- toc -->
-
-- [Usage](#usage)
-- [Commands](#commands)
-  <!-- tocstop -->
+* [Development](#development)
+* [Methodology](#methodology)
+* [Usage](#usage)
+* [Commands](#commands)
+* [Credits](#credits)
+<!-- tocstop -->
 
 # Development
 
@@ -70,27 +72,24 @@ The transformed data is then fed to `mongoose.create` as per usual running the v
 # Usage
 
 <!-- usage -->
-
 ```sh-session
 $ npm install -g gooseberry
 $ gooseberry COMMAND
 running command...
 $ gooseberry (-v|--version|version)
-gooseberry/0.0.1-beta.1 darwin-x64 node-v12.1.0
+gooseberry/0.0.2 darwin-x64 node-v12.1.0
 $ gooseberry --help [COMMAND]
 USAGE
   $ gooseberry COMMAND
 ...
 ```
-
 <!-- usagestop -->
 
 # Commands
 
 <!-- commands -->
-
-- [`gooseberry help [COMMAND]`](#gooseberry-help-command)
-- [`gooseberry seed [COLLECTION]`](#gooseberry-seed-collection)
+* [`gooseberry help [COMMAND]`](#gooseberry-help-command)
+* [`gooseberry seed [COLLECTION]`](#gooseberry-seed-collection)
 
 ## `gooseberry help [COMMAND]`
 
@@ -128,8 +127,7 @@ EXAMPLES
   $ gooseberry seed [collection]
 ```
 
-_See code: [src/commands/seed.ts](https://github.com/hennessyevan/gooseberry/blob/v0.0.1-beta.1/src/commands/seed.ts)_
-
+_See code: [src/commands/seed.ts](https://github.com/hennessyevan/gooseberry/blob/v0.0.2/src/commands/seed.ts)_
 <!-- commandsstop -->
 
 # Credits
