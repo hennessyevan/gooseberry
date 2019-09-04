@@ -1,7 +1,7 @@
 <div align="center">
   <br>
   <br>
-	<img src="Gooseberry@2x.png" width="500" alt="Gooseberry: Smart Mongoose Seeding Tool">
+	<img src="Gooseberry@2x.png" width="300" alt="Gooseberry: Smart Mongoose Seeding Tool">
 	<br>
 	<br>
   <br>
