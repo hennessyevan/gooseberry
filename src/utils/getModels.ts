@@ -17,6 +17,6 @@ export async function getModels(modelDir: string, collection?: string): Promise<
       throw new Error(error)
     }
   } catch (err) {
-    throw log(err.message, LogType.error)
+    throw log(err, LogType.error)
   }
 }

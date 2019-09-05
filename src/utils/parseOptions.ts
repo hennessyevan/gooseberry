@@ -28,6 +28,6 @@ export async function parseOptions(): Promise<Options> {
       throw log("You must supply a gooseberry config in package.json", LogType.error)
     }
   } catch (error) {
-    throw log(error.message, LogType.error)
+    throw log(error, LogType.error)
   }
 }

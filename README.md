@@ -89,7 +89,7 @@ USAGE
 
 <!-- commands -->
 * [`gooseberry help [COMMAND]`](#gooseberry-help-command)
-* [`gooseberry seed [COLLECTION]`](#gooseberry-seed-collection)
+* [`gooseberry seed`](#gooseberry-seed)
 
 ## `gooseberry help [COMMAND]`
 
@@ -108,16 +108,13 @@ OPTIONS
 
 _See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v2.2.1/src/commands/help.ts)_
 
-## `gooseberry seed [COLLECTION]`
+## `gooseberry seed`
 
 describe the command here
 
 ```
 USAGE
-  $ gooseberry seed [COLLECTION]
-
-ARGUMENTS
-  COLLECTION  Single collection to seed
+  $ gooseberry seed
 
 OPTIONS
   -h, --help  show CLI help

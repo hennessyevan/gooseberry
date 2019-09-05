@@ -36,13 +36,13 @@ export async function generateData(
             await generateFromArray(data, model, refPaths, filePath as string, smartMap)
           )
         } else {
-          throw log(`Data must be exported as an array`, LogType.error)
+          throw new Error(`Data must be exported as an array`)
         }
       } else {
-        throw log(`No data found for path ${filePath}`, LogType.error)
+        throw new Error(`No data found for path ${filePath}`)
       }
     } catch (error) {
-      throw log(`${error.message} from ${filePath}`, LogType.error)
+      throw new Error(`${error} from ${filePath}`)
     }
     return returnData
   }

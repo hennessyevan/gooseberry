@@ -1,6 +1,7 @@
 import { Command, flags } from "@oclif/command"
 import pEachSeries from "p-each-series"
 import input from "listr-input"
+import { register } from "ts-node"
 import {
   getModels,
   parseOptions,
@@ -17,6 +18,7 @@ import mongoose, { Mongoose } from "mongoose"
 import Listr from "listr"
 import loadJsonFile = require("load-json-file")
 import gooseberryStatics from "../gooseberry-statics"
+import loadFile from "load-any-file"
 
 export type SmartMapType = {
   pathToEntry: string
@@ -31,17 +33,17 @@ export default class Seed extends Command {
 
   static examples = [`$ gooseberry seed`, `$ gooseberry seed [collection]`]
 
-  static args = [{ name: "collection", required: false, description: "Single collection to seed" }]
+  // static args = [{ name: "collection", required: false, description: "Single collection to seed" }]
 
   static flags = {
     help: flags.help({ char: "h" })
   }
 
   async run() {
-    const { args, flags } = this.parse(Seed)
+    // const { args, flags } = this.parse(Seed)
 
-    const { collection } = args
-    log(`Seeding ${collection ? collection : "All collections"}`)
+    // const { collection } = args
+    log(`Seeding all collections`)
 
     const tasks = new Listr<{
       config: Options
@@ -81,12 +83,15 @@ export default class Seed extends Command {
         title: "Loading models",
         task: async ctx => {
           // Enumerate models
-          ctx.models = await getModels(ctx.config.modelDir, collection)
+          ctx.models = await getModels(ctx.config.modelDir)
           // Connect mongoose
           await mongoose.connect(ctx.config.mongoURI, { useNewUrlParser: true })
           await mongoose.connection.dropDatabase()
           // Register models with mongoose
-          await ctx.models.map(model => require(model))
+          await ctx.models.map(model => {
+            register({ transpileOnly: true })
+            require(model)
+          })
           // Load existing cache or return
           await loadJsonFile<SmartMapType>(gooseberryStatics.smartMap)
             .then(doc => (ctx.smartMap = doc))
