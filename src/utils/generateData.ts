@@ -2,21 +2,15 @@ import { ObjectId } from "bson"
 import fs from "fs"
 import globby from "globby"
 import loadFile from "load-any-file"
+import get from "lodash.get"
 import merge from "lodash.merge"
 import { Document, Model } from "mongoose"
 import * as path from "path"
 import { RefType } from "./getRefPaths"
 import { log, LogType } from "./log"
 import { Options } from "./parseOptions"
-import get from "lodash.get"
-import { SmartMapType } from "../commands/seed"
 
-export async function generateData(
-  model: Model<Document>,
-  refPaths: RefType[],
-  config: Options,
-  smartMap: SmartMapType
-) {
+export async function generateData(model: Model<Document>, refPaths: RefType[], config: Options) {
   const dataDirPath = path.join(process.cwd(), config.dataDir)
 
   if (!fs.existsSync(dataDirPath)) {
@@ -33,7 +27,7 @@ export async function generateData(
         if (Array.isArray(data)) {
           returnData = merge(
             returnData,
-            await generateFromArray(data, model, refPaths, filePath as string, smartMap)
+            await generateFromArray(data, model, refPaths, filePath as string)
           )
         } else {
           throw new Error(`Data must be exported as an array`)
@@ -70,8 +64,7 @@ async function generateFromArray(
   data: any[],
   model: Model<Document>,
   refs: RefType[],
-  filePath: string,
-  smartMap: SmartMapType
+  filePath: string
 ) {
   const collectionName = model.modelName
   const refEntries: RefEntry[] = []

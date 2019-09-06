@@ -1,11 +1,10 @@
 import { Command, flags } from "@oclif/command"
 import Listr from "listr"
 import input from "listr-input"
-import loadJsonFile from "load-json-file"
 import mongoose, { Mongoose } from "mongoose"
 import pEachSeries from "p-each-series"
+import { Observable } from "rxjs"
 import { register } from "ts-node"
-import gooseberryStatics from "../gooseberry-statics"
 import {
   CacheFile,
   createDocsFromData,
@@ -17,6 +16,7 @@ import {
   parseOptions,
   populateSmartIds
 } from "../utils"
+import chalk from "chalk"
 
 export type SmartMapType = {
   pathToEntry: string
@@ -52,34 +52,33 @@ export default class Seed extends Command {
     }>([
       {
         title: "Initializing",
-        task: async ctx => {
+        task: async (ctx, task) => {
           // Parse config from package.json
           ctx.config = await parseOptions()
           ctx.mongoose = mongoose
+
+          if (ctx.config && !ctx.config.dropDatabase) {
+            task.title = "Drop Database?"
+            input("Y/n", {
+              validate: (value: string) => ["Y", "y", "N", "n", ""].includes(value),
+              done: (drop: string) => {
+                switch (drop.toUpperCase()) {
+                  case "N":
+                    ctx.config.dropDatabase = false
+                    break
+                  default:
+                  case "Y":
+                    ctx.config.dropDatabase = true
+                    break
+                }
+              }
+            })
+          }
         }
       },
       {
-        title: "Drop Database?",
-        task: ctx =>
-          input("Y/n", {
-            validate: (value: string) => ["Y", "y", "N", "n", ""].includes(value),
-            done: (drop: string) => {
-              switch (drop.toUpperCase()) {
-                case "N":
-                  ctx.config.dropDatabase = false
-                  break
-                default:
-                case "Y":
-                  ctx.config.dropDatabase = true
-                  break
-              }
-            }
-          }),
-        enabled: ctx => ctx.config && !ctx.config.dropDatabase
-      },
-      {
         title: "Loading models",
-        task: async ctx => {
+        task: async (ctx, task) => {
           // Enumerate models
           ctx.models = await getModels(ctx.config.modelDir)
           // Connect mongoose
@@ -89,28 +88,25 @@ export default class Seed extends Command {
           ctx.models.map(async model => {
             register({ transpileOnly: true })
             await require(model)
+            task.output = model
           })
-          // Load existing cache or return
-          // await loadJsonFile<SmartMapType>(gooseberryStatics.smartMap)
-          //   .then(doc => (ctx.smartMap = doc))
-          //   .catch(() => ctx.smartMap)
         }
       },
       {
         title: "Generating Primary Data",
-        task: async ctx => {
-          const promises: Promise<CacheFile | undefined>[] = Object.keys(mongoose.models).map(
-            async model => {
-              // Get model
-              const mongooseModel = mongoose.model(model)
-              // Get ref paths
-              const refPaths = await getRefPaths(mongooseModel)
-
-              // Here we insert whatever data is available and swap out ids later
-              return await generateData(mongooseModel, refPaths, ctx.config, ctx.smartMap)
-            }
-          )
-          await pEachSeries(promises, async data => (ctx.cache = { ...ctx.cache, ...data }))
+        task: async (ctx, task) => {
+          const promises = Object.keys(mongoose.models).map(async model => {
+            // Get model
+            const mongooseModel = mongoose.model(model)
+            // Get ref paths
+            const refPaths = await getRefPaths(mongooseModel)
+            // Here we insert whatever data is available and swap out ids later
+            return { data: await generateData(mongooseModel, refPaths, ctx.config), model }
+          })
+          await pEachSeries(promises, async ({ data, model }) => {
+            task.output = model
+            ctx.cache = { ...ctx.cache, ...data }
+          })
         }
       },
       {
@@ -120,17 +116,20 @@ export default class Seed extends Command {
         }
       },
       {
-        title: "Feeding data berries to Mongoose",
-        task: async ctx => {
-          await createDocsFromData(ctx.cache!)
+        title: `Feeding ${chalk.green("Gooseberries")} to Mongoose`,
+        task: async (ctx, task) => {
+          const count = await createDocsFromData(ctx.cache!, task)
+          task.output = `🚀 Successfully wrote ${count} documents`
+          setTimeout(async () => {
+            task.output = "Closing"
+            await mongoose.disconnect().then(() => {
+              process.exit()
+            })
+          }, 1500)
         }
       }
     ])
 
-    await tasks.run().then(() => {
-      setTimeout(async () => {
-        await mongoose.disconnect()
-      }, 125)
-    })
+    await tasks.run()
   }
 }
