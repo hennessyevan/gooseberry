@@ -12,6 +12,12 @@ export async function populateSmartIds(cache: CacheFile | undefined) {
 
   Object.values(cache).forEach(data => {
     data.$gooseberry.refEntries!.forEach(refEntry => {
+      if (Array.isArray(refEntry.pathToRef)) {
+        const idsAtRef = refEntry.pathToRef.map(pathToRef => get(cache, pathToRef + "_id"))
+        set(cache, refEntry.pathToEntry, idsAtRef)
+        return
+      }
+
       const idAtRef = get(cache, refEntry.pathToRef + "_id") as any
 
       if (idAtRef) {

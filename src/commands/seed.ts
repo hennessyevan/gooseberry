@@ -1,24 +1,22 @@
 import { Command, flags } from "@oclif/command"
-import pEachSeries from "p-each-series"
-import input from "listr-input"
-import { register } from "ts-node"
-import {
-  getModels,
-  parseOptions,
-  log,
-  getRefPaths,
-  generateData,
-  Options,
-  CacheFile,
-  populateSmartIds,
-  createDocsFromData,
-  sanitizeCache
-} from "../utils"
-import mongoose, { Mongoose } from "mongoose"
 import Listr from "listr"
-import loadJsonFile = require("load-json-file")
+import input from "listr-input"
+import loadJsonFile from "load-json-file"
+import mongoose, { Mongoose } from "mongoose"
+import pEachSeries from "p-each-series"
+import { register } from "ts-node"
 import gooseberryStatics from "../gooseberry-statics"
-import loadFile from "load-any-file"
+import {
+  CacheFile,
+  createDocsFromData,
+  generateData,
+  getModels,
+  getRefPaths,
+  log,
+  Options,
+  parseOptions,
+  populateSmartIds
+} from "../utils"
 
 export type SmartMapType = {
   pathToEntry: string
@@ -88,14 +86,14 @@ export default class Seed extends Command {
           await mongoose.connect(ctx.config.mongoURI, { useNewUrlParser: true })
           await mongoose.connection.dropDatabase()
           // Register models with mongoose
-          await ctx.models.map(model => {
+          ctx.models.map(async model => {
             register({ transpileOnly: true })
-            require(model)
+            await require(model)
           })
           // Load existing cache or return
-          await loadJsonFile<SmartMapType>(gooseberryStatics.smartMap)
-            .then(doc => (ctx.smartMap = doc))
-            .catch(() => ctx.smartMap)
+          // await loadJsonFile<SmartMapType>(gooseberryStatics.smartMap)
+          //   .then(doc => (ctx.smartMap = doc))
+          //   .catch(() => ctx.smartMap)
         }
       },
       {
@@ -124,15 +122,15 @@ export default class Seed extends Command {
       {
         title: "Feeding data berries to Mongoose",
         task: async ctx => {
-          ctx.cache = await sanitizeCache(ctx.cache!)
-          await createDocsFromData(ctx.cache)
-          setTimeout(() => {
-            mongoose.disconnect()
-          }, 500)
+          await createDocsFromData(ctx.cache!)
         }
       }
     ])
 
-    await tasks.run()
+    await tasks.run().then(() => {
+      setTimeout(async () => {
+        await mongoose.disconnect()
+      }, 125)
+    })
   }
 }

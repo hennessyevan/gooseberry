@@ -6,6 +6,7 @@ export type RefType = {
   $__gooseberry_refPath?: string
   $__gooseberry_subDoc?: string
   $__gooseberry_subDocArray?: string
+  $__gooseberry_isArray?: boolean
   idRef?: string
 }
 
@@ -22,6 +23,10 @@ type PathObjType = SchemaType & {
     refPath?: string
   }
   caster?: {
+    options: {
+      ref?: string
+      refPath?: string
+    }
     instance: string
     $isArraySubdocument: boolean
   }
@@ -81,8 +86,9 @@ export async function getRefPaths(model: Model<Document>): Promise<RefType[]> {
       if (pathObj.caster.instance === "ObjectID") {
         refPaths.push({
           $__gooseberry_path: path,
-          $__gooseberry_ref: pathObj.options.ref,
-          $__gooseberry_refPath: pathObj.options.refPath
+          $__gooseberry_ref: pathObj.caster.options.ref,
+          $__gooseberry_refPath: pathObj.caster.options.refPath,
+          $__gooseberry_isArray: true
         })
       } else if (pathObj.caster.$isArraySubdocument) {
         Object.entries(pathObj.schema!.paths).forEach(([subPath, obj]) => {

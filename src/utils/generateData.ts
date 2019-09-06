@@ -62,7 +62,7 @@ export type CacheFile = {
 
 export type RefEntry = {
   pathToEntry: string
-  pathToRef: string
+  pathToRef: string | string[]
   onModel: string
 }
 
@@ -113,6 +113,15 @@ async function generateFromArray(
 
       if (!ref.$__gooseberry_ref) {
         ref.$__gooseberry_ref = get(entry, ref.$__gooseberry_refPath!)
+      }
+
+      if (ref.$__gooseberry_isArray && Array.isArray(refValue)) {
+        refEntries.push({
+          pathToEntry: `${collectionName}.data[${$__gooseberry_id}][${ref.$__gooseberry_path}]`,
+          pathToRef: refValue.map(value => `${ref.$__gooseberry_ref}.data[${value}]`),
+          onModel: ref.$__gooseberry_ref!
+        })
+        return
       }
 
       if (ref.$__gooseberry_subDoc) {
