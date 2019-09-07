@@ -33,12 +33,9 @@ export default class Seed extends Command {
   }
 
   async run() {
-    // const { args, flags } = this.parse(Seed)
-
-    // const { collection } = args
     log(`Seeding all collections`)
 
-    const tasks = new Listr<ListrContext>([
+    return new Listr<ListrContext>([
       {
         title: "Initializing",
         task: init
@@ -60,7 +57,11 @@ export default class Seed extends Command {
         task: createDocsFromData
       }
     ])
-
-    tasks.run()
+      .run()
+      .then(ctx => {
+        ctx.mongoose.disconnect().then(() => {
+          process.exit()
+        })
+      })
   }
 }
