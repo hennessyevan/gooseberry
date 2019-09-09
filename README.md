@@ -1,4 +1,4 @@
-<div align="center">
+<!-- <div align="center">
   <br>
   <br>
 	<img src="Gooseberry@2x.png" width="300" alt="Gooseberry: Smart Mongoose Seeding Tool">
@@ -6,7 +6,7 @@
 	<br>
   <br>
 	<br>
-</div>
+</div> -->
 
 [![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io)
 [![Version](https://img.shields.io/npm/v/gooseberry.svg)](https://npmjs.org/package/gooseberry)
@@ -21,6 +21,59 @@
 * [Credits](#credits)
 <!-- tocstop -->
 
+# Setup
+#### Install via yarn or npm
+```bash
+yarn add gooseberry
+OR
+npm install gooseberry
+```
+#### Create a gooseberry config in package.json
+```json
+{
+  //...,
+  "gooseberry": {
+    "modelDir": "path/to/mongooseModels",
+    "mongoURI": "mongodb://localhost:27017/{TARGET_DB_NAME}",
+    "dataDir": "path/to/seedData",
+    "dropDatabase": true (optional)
+  }
+}
+```
+#### Create a data file for each collection you want to seed
+Data files can be written in json, yaml, ts or js but must return an array of data.
+```json
+// seeds/users.json
+[{
+  "_id": "Jane",
+  "firstName": "Jane",
+  "lastName": "Doe"
+}]
+// seeds/posts.json
+[{
+  "title": "My new post",
+  "author": "Jane" // use _id from seeded user
+}]
+```
+_Note: if you don't specify an _id or id field, gooseberry will assign it a smartID based on collection name and position in array. (e.g. above example will have `post1` as its ID)_
+
+Gooseberry will recursively transform these into `ObjectID`s
+```json
+// seeds/users.json
+[{
+  "_id": ObjectID("5d6e80622037da89a22195f7"),
+  "firstName": "Jane",
+  "lastName": "Doe"
+}]
+// seeds/posts.json
+[{
+  "_id": ObjectID("5d6e80622037da89a22195f8"),
+  "title": "My new post",
+  "author": ObjectID("5d6e80622037da89a22195f7")
+}]
+```
+
+
 # Development
 
 This package is new and under active development. PRs are welcome.
@@ -33,41 +86,6 @@ Gooseberry uses placeholder IDs to reference raw seeding data. It makes 2 passes
 
 The transformed data is then fed to `mongoose.create` as per usual running the validation and methods.
 
-### Example
-
-**This Raw Data**
-
-```json
-// users.json
-  {
-    "id": "joe",
-    "firstName": "Joe",
-    "likedPosts": ["welcomePost"]
-  }
-// posts.json
-  {
-    "id": "welcomePost",
-    "title": "Welcome to my blog!",
-    "author": "joe"
-  }
-```
-
-**Becomes**
-
-```json
-// mongodb://.../users
-  {
-    "id": "5d6e80622037da89a22195f6",
-    "firstName": "Joe",
-    "likedPosts": ["5d6e80622037da89a22195f7"]
-  }
-// mongodb://.../posts
-  {
-    "id": "5d6e80622037da89a22195f7",
-    "title": "Welcome to my blog!",
-    "author": "5d6e80622037da89a22195f6"
-  }
-```
 
 # Usage
 
