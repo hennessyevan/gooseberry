@@ -58,5 +58,6 @@ export default class Seed extends Command {
       }
     ]).run()
     await mongoose.disconnect()
+    process.exit()
   }
 }
