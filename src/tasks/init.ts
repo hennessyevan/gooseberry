@@ -3,7 +3,6 @@ import { ListrTaskWrapper } from "listr"
 import { parseOptions } from "../utils"
 import mongoose from "mongoose"
 import input from "listr-input"
-import { Observable } from "rxjs"
 
 export async function init(ctx: ListrContext, task: ListrTaskWrapper) {
   ctx.config = await parseOptions()

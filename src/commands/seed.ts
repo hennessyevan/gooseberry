@@ -1,6 +1,6 @@
 import { Command, flags } from "@oclif/command"
 import Listr from "listr"
-import { Mongoose } from "mongoose"
+import mongoose, { Mongoose } from "mongoose"
 import { generate, init, loadModels, populate, createDocsFromData } from "../tasks"
 import { CacheFile, log, Options } from "../utils"
 import chalk from "chalk"
@@ -35,7 +35,7 @@ export default class Seed extends Command {
   async run() {
     log(`Seeding all collections`)
 
-    return new Listr<ListrContext>([
+    await new Listr<ListrContext>([
       {
         title: "Initializing",
         task: init
@@ -56,12 +56,7 @@ export default class Seed extends Command {
         title: `Feeding ${chalk.green("Gooseberries")} to Mongoose`,
         task: createDocsFromData
       }
-    ])
-      .run()
-      .then(ctx => {
-        ctx.mongoose.disconnect().then(() => {
-          process.exit()
-        })
-      })
+    ]).run()
+    await mongoose.disconnect()
   }
 }
