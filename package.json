@@ -1,7 +1,7 @@
 {
   "name": "gooseberry",
   "description": "Mongoose seeder with smart IDs and validation",
-  "version": "0.0.6",
+  "version": "0.1.0",
   "author": "hennessyevan @hennessyevan",
   "bin": {
     "gooseberry": "./bin/run"

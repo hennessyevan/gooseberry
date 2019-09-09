@@ -14,6 +14,7 @@
 [![License](https://img.shields.io/npm/l/gooseberry.svg)](https://github.com/hennessyevan/gooseberry/blob/master/package.json)
 
 <!-- toc -->
+* [Setup](#setup)
 * [Development](#development)
 * [Methodology](#methodology)
 * [Usage](#usage)
@@ -95,7 +96,7 @@ $ npm install -g gooseberry
 $ gooseberry COMMAND
 running command...
 $ gooseberry (-v|--version|version)
-gooseberry/0.0.6 darwin-x64 node-v12.1.0
+gooseberry/0.1.0 darwin-x64 node-v12.1.0
 $ gooseberry --help [COMMAND]
 USAGE
   $ gooseberry COMMAND
@@ -142,7 +143,7 @@ EXAMPLES
   $ gooseberry seed [collection]
 ```
 
-_See code: [src/commands/seed.ts](https://github.com/hennessyevan/gooseberry/blob/v0.0.6/src/commands/seed.ts)_
+_See code: [src/commands/seed.ts](https://github.com/hennessyevan/gooseberry/blob/v0.1.0/src/commands/seed.ts)_
 <!-- commandsstop -->
 
 # Credits
