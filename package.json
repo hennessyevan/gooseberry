@@ -59,14 +59,14 @@
     "/oclif.manifest.json"
   ],
   "homepage": "https://github.com/hennessyevan/gooseberry",
-  "keywords": [
-    "oclif"
-  ],
   "gooseberry": {
     "modelDir": "./demo/models",
     "mongoURI": "mongodb://localhost:27017/test",
     "dataDir": "./demo/data",
-    "dropDatabase": true
+    "dropDatabase": true,
+    "top": [
+      "User"
+    ]
   },
   "license": "MIT",
   "main": "lib/index.js",

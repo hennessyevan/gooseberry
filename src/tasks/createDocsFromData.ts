@@ -5,7 +5,23 @@ import { ListrContext } from "../commands/seed"
 
 export async function createDocsFromData(ctx: ListrContext, task: ListrTaskWrapper) {
   if (ctx.cache) {
-    const creationPromises = Object.entries(ctx.cache).map(async ([modelName, { data }]) => {
+    let order = Object.keys(ctx.cache)
+    if (ctx.config.top) {
+      order.sort((a, b) => {
+        if (ctx.config.top!.includes(a)) {
+          if (ctx.config.top!.includes(b)) {
+            if (ctx.config.top!.indexOf(a) < ctx.config.top!.indexOf(b)) {
+              return -1
+            }
+            return 1
+          }
+          return -1
+        }
+        return 1
+      })
+    }
+    const creationPromises = order.map(async modelName => {
+      const { data } = ctx.cache![modelName]
       const model = mongoose.model(modelName)
       task.output = modelName
 

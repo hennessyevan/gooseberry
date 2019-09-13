@@ -5,6 +5,7 @@ export type Options = {
   modelDir: string
   mongoURI: string
   dataDir: string
+  top?: string[]
   dropDatabase?: boolean
 }
 
