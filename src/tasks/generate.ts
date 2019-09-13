@@ -1,10 +1,10 @@
 import { ListrContext, ListrTaskWrapper } from "listr"
+import pEachSeries from "p-each-series"
 import mongoose from "mongoose"
-import { generateData, getRefPaths } from "../utils"
+import { generateData, getRefPaths, log, LogType } from "../utils"
 
 export async function generate(ctx: ListrContext, task: ListrTaskWrapper) {
   const generationPromises = Object.keys(mongoose.models).map(async model => {
-    task.output = model
     // Get model
     const mongooseModel = mongoose.model(model)
     // Get ref paths
@@ -13,6 +13,9 @@ export async function generate(ctx: ListrContext, task: ListrTaskWrapper) {
     const data = await generateData(mongooseModel, refPaths, ctx.config)
 
     ctx.cache = { ...ctx.cache, ...data }
+    return model
   })
-  await Promise.all(generationPromises)
+  await pEachSeries(generationPromises, model => {
+    task.output = model
+  }).catch(err => log(err, LogType.error))
 }

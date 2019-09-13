@@ -2,7 +2,7 @@ import { Command, flags } from "@oclif/command"
 import Listr from "listr"
 import mongoose, { Mongoose } from "mongoose"
 import { generate, init, loadModels, populate, createDocsFromData } from "../tasks"
-import { CacheFile, log, Options } from "../utils"
+import { CacheFile, log, Options, LogType } from "../utils"
 import chalk from "chalk"
 
 export type SmartMapType = {
@@ -25,8 +25,6 @@ export default class Seed extends Command {
   static description = "describe the command here"
 
   static examples = [`$ gooseberry seed`, `$ gooseberry seed [collection]`]
-
-  // static args = [{ name: "collection", required: false, description: "Single collection to seed" }]
 
   static flags = {
     help: flags.help({ char: "h" })
@@ -58,6 +56,5 @@ export default class Seed extends Command {
       }
     ]).run()
     await mongoose.disconnect()
-    process.exit()
   }
 }

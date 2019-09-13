@@ -1,7 +1,7 @@
 import { ListrTaskWrapper } from "listr"
 import mongoose from "mongoose"
+import pEachSeries from "p-each-series"
 import { ListrContext } from "../commands/seed"
-import { log, LogType } from "../utils/log"
 
 export async function createDocsFromData(ctx: ListrContext, task: ListrTaskWrapper) {
   if (ctx.cache) {
@@ -12,11 +12,14 @@ export async function createDocsFromData(ctx: ListrContext, task: ListrTaskWrapp
       const mongoosePromises = Object.values(data).map(
         async doc =>
           await new model(doc).save().catch(error => {
-            log(error.message, LogType.error)
+            task.report(error)
           })
       )
-      await Promise.all(mongoosePromises)
+      await pEachSeries(mongoosePromises, () => {}).catch(err => task.report(err))
+      return modelName
     })
-    await Promise.all(creationPromises)
+    await pEachSeries(creationPromises, model => (task.output = model)).catch(err =>
+      task.report(err)
+    )
   }
 }
