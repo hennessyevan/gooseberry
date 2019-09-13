@@ -15,11 +15,13 @@ export async function createDocsFromData(ctx: ListrContext, task: ListrTaskWrapp
             task.report(error)
           })
       )
-      await pEachSeries(mongoosePromises, () => {}).catch(err => task.report(err))
+      await pEachSeries(mongoosePromises, () => {}).catch(err =>
+        task.report({ ...err, message: `${err.message} at Mongoose` })
+      )
       return modelName
     })
     await pEachSeries(creationPromises, model => (task.output = model)).catch(err =>
-      task.report(err)
+      task.report({ ...err, message: `${err.message} at Document Creation` })
     )
   }
 }

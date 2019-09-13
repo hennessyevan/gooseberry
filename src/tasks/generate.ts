@@ -17,5 +17,5 @@ export async function generate(ctx: ListrContext, task: ListrTaskWrapper) {
   })
   await pEachSeries(generationPromises, model => {
     task.output = model
-  }).catch(err => log(err, LogType.error))
+  }).catch(err => task.report({ ...err, message: `${err.message} at Data Generation` }))
 }

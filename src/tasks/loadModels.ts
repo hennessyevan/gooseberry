@@ -8,7 +8,7 @@ import pEachSeries from "p-each-series"
 export async function loadModels(ctx: ListrContext, task: ListrTaskWrapper) {
   ctx.models = await getModels(ctx.config.modelDir)
   // Connect mongoose
-  await mongoose.connect(ctx.config.mongoURI, { useNewUrlParser: true })
+  await mongoose.connect(ctx.config.mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
   await mongoose.connection.dropDatabase()
 
   const modelPromises = ctx.models.map(async model => {
@@ -19,5 +19,5 @@ export async function loadModels(ctx: ListrContext, task: ListrTaskWrapper) {
 
   await pEachSeries(modelPromises, model => {
     task.output = model
-  }).catch(err => task.report(err))
+  }).catch(err => task.report({ ...err, message: `${err.message} at Model Loading` }))
 }

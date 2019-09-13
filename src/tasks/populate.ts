@@ -23,5 +23,7 @@ export async function populate(ctx: ListrContext, task: ListrTaskWrapper) {
     })
   })
 
-  await pEachSeries(populationPromises, () => {}).catch(err => task.report(err))
+  await pEachSeries(populationPromises, () => {}).catch(err =>
+    task.report({ ...err, message: `${err.message} at SmartID Population` })
+  )
 }
