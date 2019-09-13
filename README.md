@@ -96,7 +96,7 @@ $ npm install -g gooseberry
 $ gooseberry COMMAND
 running command...
 $ gooseberry (-v|--version|version)
-gooseberry/0.1.5 darwin-x64 node-v12.1.0
+gooseberry/0.1.6 darwin-x64 node-v12.1.0
 $ gooseberry --help [COMMAND]
 USAGE
   $ gooseberry COMMAND
@@ -144,7 +144,7 @@ EXAMPLES
   $ gooseberry seed [collection]
 ```
 
-_See code: [src/commands/seed.ts](https://github.com/hennessyevan/gooseberry/blob/v0.1.5/src/commands/seed.ts)_
+_See code: [src/commands/seed.ts](https://github.com/hennessyevan/gooseberry/blob/v0.1.6/src/commands/seed.ts)_
 <!-- commandsstop -->
 
 # Credits
