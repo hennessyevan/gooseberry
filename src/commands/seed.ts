@@ -2,7 +2,7 @@ import { Command, flags } from "@oclif/command"
 import Listr from "listr"
 import mongoose, { Mongoose } from "mongoose"
 import { generate, init, loadModels, populate, createDocsFromData } from "../tasks"
-import { CacheFile, log, Options, LogType } from "../utils"
+import { CacheFile, log, Options } from "../utils"
 import chalk from "chalk"
 
 export type SmartMapType = {
@@ -27,34 +27,41 @@ export default class Seed extends Command {
   static examples = [`$ gooseberry seed`, `$ gooseberry seed [collection]`]
 
   static flags = {
-    help: flags.help({ char: "h" })
+    help: flags.help({ char: "h" }),
+    verbose: flags.boolean({ char: "v", default: false })
   }
 
   async run() {
     log(`Seeding all collections`)
+    const { flags } = this.parse(Seed)
 
-    await new Listr<ListrContext>([
+    await new Listr<ListrContext>(
+      [
+        {
+          title: "Initializing",
+          task: init
+        },
+        {
+          title: "Loading models",
+          task: loadModels
+        },
+        {
+          title: "Transforming Seed Data",
+          task: generate
+        },
+        {
+          title: "Populating Smart References",
+          task: populate
+        },
+        {
+          title: `Feeding ${chalk.green("Gooseberries")} to Mongoose`,
+          task: createDocsFromData
+        }
+      ],
       {
-        title: "Initializing",
-        task: init
-      },
-      {
-        title: "Loading models",
-        task: loadModels
-      },
-      {
-        title: "Transforming Seed Data",
-        task: generate
-      },
-      {
-        title: "Populating Smart References",
-        task: populate
-      },
-      {
-        title: `Feeding ${chalk.green("Gooseberries")} to Mongoose`,
-        task: createDocsFromData
+        renderer: flags.verbose ? "verbose" : "default"
       }
-    ]).run()
+    ).run()
     await mongoose.disconnect()
   }
 }
